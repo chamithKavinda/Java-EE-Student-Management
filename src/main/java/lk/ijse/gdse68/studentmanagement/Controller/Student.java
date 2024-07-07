@@ -27,6 +27,10 @@ public class Student extends HttpServlet {
         String email = jsonObject.getString("email");
         System.out.println(email);
 
+        //send data to the client
+        var writer = resp.getWriter();
+        writer.write(email);
+
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
