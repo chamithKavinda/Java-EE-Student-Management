@@ -23,6 +23,12 @@ import static lk.ijse.gdse68.studentmanagement.util.Util.idGenerate;
 public class Student extends HttpServlet {
 
     @Override
+    public void init() throws ServletException {
+        var initParameter = getServletContext().getInitParameter("myparam");
+        System.out.println(initParameter);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json")){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
