@@ -1,6 +1,7 @@
 package lk.ijse.gdse68.studentmanagement.Controller;
 
 import jakarta.json.Json;
+import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.servlet.ServletException;
@@ -23,13 +24,23 @@ public class Student extends HttpServlet {
 
         //process the JSON
         JsonReader reader = Json.createReader(req.getReader());
-        JsonObject jsonObject = reader.readObject();
-        String email = jsonObject.getString("email");
-        System.out.println(email);
+//        JsonObject jsonObject = reader.readObject();
+//        String email = jsonObject.getString("email");
+//        System.out.println(email);
+//
+        //Optimal JSON array processing
+        JsonArray jsonArray = reader.readArray();
+        for (int i=0; i< jsonArray.size();i++){
+            var jsonObject = jsonArray.getJsonObject(i);
+            System.out.println(jsonObject.getString("name"));
+            System.out.println(jsonObject.getString("email"));
+        }
 
-        //send data to the client
-        var writer = resp.getWriter();
-        writer.write(email);
+         //send data to the client
+//        var writer = resp.getWriter();
+//        writer.write(email);
+
+
 
     }
     @Override
