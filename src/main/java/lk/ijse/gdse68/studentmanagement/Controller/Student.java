@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.gdse68.studentmanagement.dto.StudentDTO;
 import lk.ijse.gdse68.studentmanagement.util.Util;
+import java.sql.PreparedStatement;
+import java.io.PrintWriter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,12 +27,9 @@ import static lk.ijse.gdse68.studentmanagement.util.Util.idGenerate;
 @WebServlet(urlPatterns = "/student" )
 public class Student extends HttpServlet {
     Connection connection;
-
+    public static String SAVE_STUDENT = "INSERT INTO student (id,name,email,city,level) VALUES(?,?,?,?,?)";
     @Override
     public void init() throws ServletException {
-//        var initParameter = getServletContext().getInitParameter("myparam");
-//        System.out.println(initParameter);
-
         try {
             var dbClass = getServletContext().getInitParameter("db-class");
             var dbUrl = getServletContext().getInitParameter("dburl");
@@ -48,21 +47,34 @@ public class Student extends HttpServlet {
         if(req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json")){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
-        //Object binding of the JSON
+        try (var writer = resp.getWriter()){
+            Jsonb jsonb = JsonbBuilder.create();
+            StudentDTO student = jsonb.fromJson(req.getReader(), StudentDTO.class);
+            student.setId(Util.idGenerate());
+            //Save data in the DB
+            var ps = connection.prepareStatement(SAVE_STUDENT);
+            ps.setString(1, student.getId());
+            ps.setString(2, student.getName());
+            ps.setString(3, student.getEmail());
+            ps.setString(4, student.getCity());
+            ps.setString(5, student.getLevel());
+            if(ps.executeUpdate() != 0){
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                writer.write("Save Student Successfully");
 
-        Jsonb jsonb = JsonbBuilder.create();
-        StudentDTO student = jsonb.fromJson(req.getReader(), StudentDTO.class);
-        student.setId(Util.idGenerate());
-        System.out.println(student);
-        //create response
-        resp.setContentType("application/json");
-        jsonb.toJson(student, resp.getWriter());
-
+            }else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                writer.write("Failed to Save Student");
+            }
+        }catch (SQLException e){
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Todo: Get student
+
     }
 
     @Override
