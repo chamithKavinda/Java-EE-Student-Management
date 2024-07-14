@@ -16,16 +16,31 @@ import lk.ijse.gdse68.studentmanagement.util.Util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import static lk.ijse.gdse68.studentmanagement.util.Util.idGenerate;
 
-@WebServlet(urlPatterns = "/student")
+@WebServlet(urlPatterns = "/student" )
 public class Student extends HttpServlet {
+    Connection connection;
 
     @Override
     public void init() throws ServletException {
-        var initParameter = getServletContext().getInitParameter("myparam");
-        System.out.println(initParameter);
+//        var initParameter = getServletContext().getInitParameter("myparam");
+//        System.out.println(initParameter);
+
+        try {
+            var dbClass = getServletContext().getInitParameter("db-class");
+            var dbUrl = getServletContext().getInitParameter("dburl");
+            var dbUserName = getServletContext().getInitParameter("db-username");
+            var dbPassword = getServletContext().getInitParameter("db-password");
+            Class.forName(dbClass);
+            this.connection = DriverManager.getConnection(dbUrl,dbUserName,dbPassword);
+        }catch (ClassNotFoundException | SQLException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -11,7 +11,7 @@
 
     <context-param>
         <param-name>dburl</param-name>
-        <param-value></param-value>
+        <param-value>jdbc:mysql://localhost:3306/java_ee</param-value>
     </context-param>
 
     <context-param>
@@ -23,4 +23,5 @@
         <param-name>db-password</param-name>
         <param-value>CK13</param-value>
     </context-param>
+
 </web-app>
