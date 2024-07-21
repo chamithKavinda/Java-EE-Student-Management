@@ -30,8 +30,8 @@ public class Student extends HttpServlet {
     public static String SAVE_STUDENT = "INSERT INTO student (id,name,email,city,level) VALUES(?,?,?,?,?)";
     public static String GET_STUDENT = "SELECT * FROM student WHERE id=?";
     public static String UPDATE_STUDENT = "UPDATE student SET name=?,email=?,city=?,level=? WHERE id=?";
-
     public static String DELETE_STUDENT = "DELETE FROM student WHERE id=?";
+    
     @Override
     public void init() throws ServletException {
         try {
@@ -53,7 +53,10 @@ public class Student extends HttpServlet {
         }
         try (var writer = resp.getWriter()){
             Jsonb jsonb = JsonbBuilder.create();
+
+            System.out.println("1");
             StudentDTO student = jsonb.fromJson(req.getReader(), StudentDTO.class);
+            System.out.println("Hello");
             student.setId(Util.idGenerate());
             //Save data in the DB
             var ps = connection.prepareStatement(SAVE_STUDENT);
@@ -74,6 +77,8 @@ public class Student extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
+
+
     }
 
     @Override
@@ -122,7 +127,7 @@ public class Student extends HttpServlet {
                 writer.write("Update failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
-        }catch (SQLException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
