@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="form">
+        <h1>Student Data Form</h1>
+        <form  id="registrationForm">
+            <input id="name" type="text" placeholder="Name">
+
+            <input id="email" type="text" placeholder="E-mail">
+            
+
+            <input id="city" type="text" placeholder="City">
+            
+
+            <input id="level" type="text" placeholder="Level">
+            
+
+            <button id="btn" type="submit">Save</button>
+            <button id="btn1" type="reset">Reset</button>
+        </form>
+        
+        <script>
+            document.getElementById("registrationForm").addEventListener("submit", (event) => {
+                event.preventDefault();
+
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const city = document.getElementById("city").value;
+                const level = document.getElementById("level").value;
+
+                const registrationForm = {
+                    name: name,
+                    email: email,
+                    city: city,
+                    level: level,
+                };
+
+                console.log(registrationForm);
+
+                //Create JSON
+                const studentJSON = JSON.stringify(registrationForm)
+                console.log(studentJSON)
+
+                //Introduce AJAX
+                const http = new XMLHttpRequest()
+
+                http.onreadystatechange = ()=>{
+                    if(http.readyState == 4){
+                        if(http.status == 200){
+                            var responseTextJSON = JSON.stringify(http.responseText)
+                            console.log(responseTextJSON)
+                        }else{
+                            console.error("Failed");
+                            console.error("Status"+http.status)
+                            console.error("Ready Status"+http.readyState)
+                        }
+                    }else{
+                        console.error("Ready Status"+http.readyState)
+                    }
+                    
+                }
+
+                http.open("POST","http://localhost:8080/StudentManagement_war_exploded/student",true)
+
+                http.setRequestHeader("Content-Type","application/json")
+
+                http.send(registrationForm)
+
+            });
+
+        </script>
+    </div>
+</body>
+</html>
