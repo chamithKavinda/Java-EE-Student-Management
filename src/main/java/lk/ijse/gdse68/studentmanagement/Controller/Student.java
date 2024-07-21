@@ -53,10 +53,7 @@ public class Student extends HttpServlet {
         }
         try (var writer = resp.getWriter()){
             Jsonb jsonb = JsonbBuilder.create();
-
-            System.out.println("1");
             StudentDTO student = jsonb.fromJson(req.getReader(), StudentDTO.class);
-            System.out.println("Hello");
             student.setId(Util.idGenerate());
             //Save data in the DB
             var ps = connection.prepareStatement(SAVE_STUDENT);
@@ -77,8 +74,6 @@ public class Student extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
-
-
     }
 
     @Override
