@@ -25,11 +25,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import static lk.ijse.gdse68.studentmanagement.util.Util.idGenerate;
 
 @WebServlet(urlPatterns = "/student" )
 public class Student extends HttpServlet {
+    static Logger logger = Logger.getLogger(Student.class.getName());
     Connection connection;
     public static String SAVE_STUDENT = "INSERT INTO student (id,name,email,city,level) VALUES(?,?,?,?,?)";
     public static String GET_STUDENT = "SELECT * FROM student WHERE id=?";
