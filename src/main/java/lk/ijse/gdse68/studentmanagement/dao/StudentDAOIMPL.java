@@ -10,6 +10,8 @@ import java.sql.SQLException;
 public final class StudentDAOIMPL implements StudentDAO {
     public static String SAVE_STUDENT = "INSERT INTO student (id,name,email,city,level) VALUES(?,?,?,?,?)";
 
+    public static String GET_STUDENT = "SELECT * FROM student WHERE id=?";
+
     @Override
     public String saveStudent(StudentDTO student, Connection connection) throws Exception {
         try {
@@ -41,6 +43,21 @@ public final class StudentDAOIMPL implements StudentDAO {
 
     @Override
     public StudentDTO getStudent(String id, Connection connection) throws Exception {
-        return null;
+        try {
+            StudentDTO studentDTO = new StudentDTO();
+            var ps = connection.prepareStatement(GET_STUDENT);
+            ps.setString(1, id);
+            var rst = ps.executeQuery();
+            while (rst.next()){
+                studentDTO.setId(rst.getString("id"));
+                studentDTO.setName(rst.getString("name"));
+                studentDTO.setEmail(rst.getString("email"));
+                studentDTO.setCity(rst.getString("city"));
+                studentDTO.setLevel(rst.getString("level"));
+            }
+            return studentDTO;
+        }catch (Exception e){
+            throw new SQLException(e.getMessage());
+        }
     }
 }

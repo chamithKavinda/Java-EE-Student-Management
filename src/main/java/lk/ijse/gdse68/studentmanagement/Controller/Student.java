@@ -36,7 +36,7 @@ public class Student extends HttpServlet {
 
     static Logger logger = LoggerFactory.getLogger(Student.class);
     Connection connection;
-    public static String SAVE_STUDENT = "INSERT INTO student (id,name,email,city,level) VALUES(?,?,?,?,?)";
+
     public static String GET_STUDENT = "SELECT * FROM student WHERE id=?";
     public static String UPDATE_STUDENT = "UPDATE student SET name=?,email=?,city=?,level=? WHERE id=?";
     public static String DELETE_STUDENT = "DELETE FROM student WHERE id=?";
@@ -86,21 +86,12 @@ public class Student extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try(var writer = resp.getWriter()) {
-            StudentDTO studentDTO = new StudentDTO();
+            var studentDAOIMPL = new StudentDAOIMPL();
             Jsonb jsonb = JsonbBuilder.create();
-            var studentId = req.getParameter("studentId");
-            var ps = connection.prepareStatement(GET_STUDENT);
-            ps.setString(1, studentId);
-            var rst = ps.executeQuery();
-            while (rst.next()){
-                studentDTO.setId(rst.getString("id"));
-                studentDTO.setName(rst.getString("name"));
-                studentDTO.setEmail(rst.getString("email"));
-                studentDTO.setCity(rst.getString("city"));
-                studentDTO.setLevel(rst.getString("level"));
-            }
+
+            var studentId = req.getParameter("studentId");;
             resp.setContentType("application/json");
-            jsonb.toJson(studentDTO,writer);
+            jsonb.toJson(studentDAOIMPL.getStudent(studentId,connection),writer);
 
         }catch (Exception e){
             e.printStackTrace();
