@@ -1,0 +1,2 @@
+10:48:24.867 [RMI TCP Connection(2)-127.0.0.1] INFO  l.i.g.s.Controller.Student - Init method invoked
+10:48:25.707 [RMI TCP Connection(2)-127.0.0.1] INFO  l.i.g.s.Controller.Student - Connection initialized
