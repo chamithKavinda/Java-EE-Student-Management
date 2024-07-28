@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.gdse68.studentmanagement.dto.StudentDTO;
 import lk.ijse.gdse68.studentmanagement.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -25,13 +27,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 import static lk.ijse.gdse68.studentmanagement.util.Util.idGenerate;
 
-@WebServlet(urlPatterns = "/student" )
+@WebServlet(urlPatterns = "/student",loadOnStartup = 2)
 public class Student extends HttpServlet {
-    static Logger logger = Logger.getLogger(Student.class.getName());
+    static Logger logger = LoggerFactory.getLogger(Student.class);
     Connection connection;
     public static String SAVE_STUDENT = "INSERT INTO student (id,name,email,city,level) VALUES(?,?,?,?,?)";
     public static String GET_STUDENT = "SELECT * FROM student WHERE id=?";
@@ -40,6 +41,7 @@ public class Student extends HttpServlet {
     
     @Override
     public void init() throws ServletException {
+        logger.info("Init method invoked");
         try {
 //            var dbClass = getServletContext().getInitParameter("db-class");
 //            var dbUrl = getServletContext().getInitParameter("dburl");
@@ -50,6 +52,7 @@ public class Student extends HttpServlet {
             var ctx = new InitialContext();
             DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/studentRegisPortal");
             this.connection = pool.getConnection();
+            logger.info("Connection initialized",this.connection);
         }catch (SQLException |NamingException e){
             e.printStackTrace();
         }
