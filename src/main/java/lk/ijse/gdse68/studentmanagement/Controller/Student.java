@@ -36,8 +36,6 @@ public class Student extends HttpServlet {
 
     static Logger logger = LoggerFactory.getLogger(Student.class);
     Connection connection;
-
-    public static String DELETE_STUDENT = "DELETE FROM student WHERE id=?";
     
     @Override
     public void init() throws ServletException {
@@ -120,16 +118,15 @@ public class Student extends HttpServlet {
         try (var writer = resp.getWriter()) {
             var studentId = req.getParameter("studentId");
 
-            var ps = connection.prepareStatement(DELETE_STUDENT);
-            ps.setString(1, studentId);
-            if(ps.executeUpdate() != 0){
+            var studentDAOIMPL = new StudentDAOIMPL();
+            if(studentDAOIMPL.deleteStudent(studentId,connection)){
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else {
                 writer.write("Delete failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
 
-        }catch (SQLException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

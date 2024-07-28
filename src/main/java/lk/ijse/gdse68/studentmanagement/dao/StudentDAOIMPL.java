@@ -14,6 +14,8 @@ public final class StudentDAOIMPL implements StudentDAO {
 
     public static String UPDATE_STUDENT = "UPDATE student SET name=?,email=?,city=?,level=? WHERE id=?";
 
+    public static String DELETE_STUDENT = "DELETE FROM student WHERE id=?";
+
     @Override
     public String saveStudent(StudentDTO student, Connection connection) throws Exception {
         try {
@@ -35,7 +37,9 @@ public final class StudentDAOIMPL implements StudentDAO {
 
     @Override
     public boolean deleteStudent(String id, Connection connection) throws Exception {
-        return false;
+        var ps = connection.prepareStatement(DELETE_STUDENT);
+        ps.setString(1, id);
+        return ps.executeUpdate() != 0;
     }
 
     @Override
